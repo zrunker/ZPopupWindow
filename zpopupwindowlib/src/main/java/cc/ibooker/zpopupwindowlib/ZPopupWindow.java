@@ -123,17 +123,21 @@ public abstract class ZPopupWindow extends PopupWindow {
      * @param yOffset Y轴偏移量
      */
     public void showViewBottom(View view, int yOffset) {
+//        this.maskHeight = getScreenH(context) - getStatusHeight((Activity) context) - view.getHeight() - yOffset;
+//        // 获取需要在其上方显示的控件的位置信息
+//        int[] location = new int[2];
+//        view.getLocationOnScreen(location);
+//        // 获取自身的长宽高
+//        this.getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+////        int popupHeight = this.getContentView().getMeasuredHeight();
+//        int popupWidth = this.getContentView().getMeasuredWidth();
+//        // 在控件上方显示
+//        maskGravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
+//        showAtLocation(view, Gravity.NO_GRAVITY, (location[0]) + popupWidth / 2, location[1] + view.getHeight() + yOffset);
+
         this.maskHeight = getScreenH(context) - getStatusHeight((Activity) context) - view.getHeight() - yOffset;
-        // 获取需要在其上方显示的控件的位置信息
-        int[] location = new int[2];
-        view.getLocationOnScreen(location);
-        // 获取自身的长宽高
-        this.getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-//        int popupHeight = this.getContentView().getMeasuredHeight();
-        int popupWidth = this.getContentView().getMeasuredWidth();
-        // 在控件上方显示
         maskGravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
-        showAtLocation(view, Gravity.NO_GRAVITY, (location[0]) + popupWidth / 2, location[1] + view.getHeight() + yOffset);
+        showAsDropDown(view, 0, yOffset);
     }
 
     // 注册广播接收器，接收暗屏广播，锁屏广播
