@@ -11,7 +11,7 @@ public class ZPopupWindowUtil {
 
     private static ZPopupWindowUtil bottomPushPopupWindowUtil;
 
-    public static ZPopupWindowUtil getInstance() {
+    static ZPopupWindowUtil getInstance() {
         if (bottomPushPopupWindowUtil == null)
             bottomPushPopupWindowUtil = new ZPopupWindowUtil();
         return bottomPushPopupWindowUtil;
@@ -26,7 +26,7 @@ public class ZPopupWindowUtil {
     }
 
     // 添加窗体
-    public void addZPopupWindow(ZPopupWindow data) {
+    void addZPopupWindow(ZPopupWindow data) {
         if (mDatas == null) {
             mDatas = new ArrayList<>();
         }
@@ -42,7 +42,7 @@ public class ZPopupWindowUtil {
     }
 
     // 清空数据
-    public void clearZPopupWindow() {
+    void clearZPopupWindow() {
         if (mDatas != null) {
             for (ZPopupWindow pushPopupWindow : mDatas) {
                 pushPopupWindow.dismiss();
