@@ -148,6 +148,9 @@ public abstract class ZPopupWindow extends PopupWindow {
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_USER_PRESENT);
         context.registerReceiver(receiver, filter);
+        // 广播开启的同时，添加到管理类
+        ZPopupWindowUtil.getInstance().clearZPopupWindow();
+        ZPopupWindowUtil.getInstance().addZPopupWindow(this);
     }
 
     // 定义一个广播接收器，帮助关闭PopuWindow
