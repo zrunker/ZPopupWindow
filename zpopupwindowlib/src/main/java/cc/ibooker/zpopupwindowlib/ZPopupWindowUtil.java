@@ -44,8 +44,8 @@ public class ZPopupWindowUtil {
     // 清空数据
     void clearZPopupWindow() {
         if (mDatas != null) {
-            for (ZPopupWindow pushPopupWindow : mDatas) {
-                pushPopupWindow.dismiss();
+            for (ZPopupWindow zPopupWindow : mDatas) {
+                zPopupWindow.dismiss();
             }
             mDatas.clear();
         }
