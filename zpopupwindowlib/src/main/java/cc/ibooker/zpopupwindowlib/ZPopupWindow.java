@@ -45,6 +45,8 @@ public abstract class ZPopupWindow extends PopupWindow {
         setFocusable(true);
         setBackgroundDrawable(context.getResources().getDrawable(android.R.color.transparent));
         setAnimationStyle(R.style.BottomPushPopupWindow);
+        // 注册相应广播
+        regReceiver();
     }
 
     // 抽象方法
@@ -85,8 +87,6 @@ public abstract class ZPopupWindow extends PopupWindow {
      */
     public void showBottom() {
         showAtLocation(((Activity) context).getWindow().getDecorView(), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
-        // 注册相应广播
-        regReceiver();
     }
 
     /**
@@ -94,8 +94,6 @@ public abstract class ZPopupWindow extends PopupWindow {
      */
     public void showTop() {
         showAtLocation(((Activity) context).getWindow().getDecorView(), Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
-        // 注册相应广播
-        regReceiver();
     }
 
     /**
@@ -116,8 +114,6 @@ public abstract class ZPopupWindow extends PopupWindow {
         //在控件上方显示
         maskGravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
         showAtLocation(view, Gravity.NO_GRAVITY, location[0] + popupWidth / 2, location[1] - popupHeight - yOffset);
-        // 注册相应广播
-        regReceiver();
     }
 
     /**
@@ -138,8 +134,6 @@ public abstract class ZPopupWindow extends PopupWindow {
         // 在控件上方显示
         maskGravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
         showAtLocation(view, Gravity.NO_GRAVITY, (location[0]) + popupWidth / 2, location[1] + view.getHeight() + yOffset);
-        // 注册相应广播
-        regReceiver();
     }
 
     // 注册广播接收器，接收暗屏广播，锁屏广播
