@@ -10,7 +10,7 @@ import cc.ibooker.zpopupwindowlib.ZPopupWindow;
  * 实现PopupWindow
  * Created by 邹峰立 on 2018/2/23.
  */
-public class DiyPopupWindow extends ZPopupWindow {
+public class DiyPopupWindow extends ZPopupWindow implements ZPopupWindow.OnDismissListener {
 
     public DiyPopupWindow(Context context) {
         super(context);
@@ -19,5 +19,11 @@ public class DiyPopupWindow extends ZPopupWindow {
     @Override
     protected View generateCustomView(Context context) {
         return LayoutInflater.from(context).inflate(R.layout.layout_popupwindow, null, false);
+    }
+
+    // PopupWindow关闭事件监听
+    @Override
+    public void onDismiss() {
+
     }
 }
