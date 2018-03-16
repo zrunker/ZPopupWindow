@@ -36,15 +36,17 @@ public abstract class ZPopupWindow extends PopupWindow {
     public ZPopupWindow(Context context) {
         super(context);
         this.context = context;
+        setContentView(generateCustomView(context));
         this.maskHeight = getScreenH(context);
         wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        setContentView(generateCustomView(context));
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         setOutsideTouchable(true);
         setFocusable(true);
         setBackgroundDrawable(context.getResources().getDrawable(android.R.color.transparent));
         setAnimationStyle(R.style.BottomPushPopupWindow);
+        // 关闭所有ZPopupWindow
+        ZPopupWindowUtil.getInstance().clearZPopupWindow();
         // 注册相应广播
         regReceiver();
     }
@@ -86,14 +88,16 @@ public abstract class ZPopupWindow extends PopupWindow {
      * 显示在界面的底部
      */
     public void showBottom() {
-        showAtLocation(((Activity) context).getWindow().getDecorView(), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+        if (context != null)
+            showAtLocation(((Activity) context).getWindow().getDecorView(), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
     }
 
     /**
      * 显示在界面的顶部
      */
     public void showTop() {
-        showAtLocation(((Activity) context).getWindow().getDecorView(), Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
+        if (context != null)
+            showAtLocation(((Activity) context).getWindow().getDecorView(), Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
     }
 
     /**
@@ -103,17 +107,19 @@ public abstract class ZPopupWindow extends PopupWindow {
      * @param yOffset Y轴偏移量
      */
     public void showViewTop(View view, int yOffset) {
-        this.maskHeight = getScreenH(context) - view.getHeight() - yOffset;
-        // 获取需要在其上方显示的控件的位置信息
-        int[] location = new int[2];
-        view.getLocationOnScreen(location);
-        // 获取自身的长宽高
-        this.getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        int popupHeight = this.getContentView().getMeasuredHeight();
-        int popupWidth = this.getContentView().getMeasuredWidth();
-        //在控件上方显示
-        maskGravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
-        showAtLocation(view, Gravity.NO_GRAVITY, location[0] + popupWidth / 2, location[1] - popupHeight - yOffset);
+        if (context != null) {
+            this.maskHeight = getScreenH(context) - view.getHeight() - yOffset;
+            // 获取需要在其上方显示的控件的位置信息
+            int[] location = new int[2];
+            view.getLocationOnScreen(location);
+            // 获取自身的长宽高
+            this.getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            int popupHeight = this.getContentView().getMeasuredHeight();
+            int popupWidth = this.getContentView().getMeasuredWidth();
+            //在控件上方显示
+            maskGravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
+            showAtLocation(view, Gravity.NO_GRAVITY, location[0] + popupWidth / 2, location[1] - popupHeight - yOffset);
+        }
     }
 
     /**
@@ -134,10 +140,11 @@ public abstract class ZPopupWindow extends PopupWindow {
 //        // 在控件上方显示
 //        maskGravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
 //        showAtLocation(view, Gravity.NO_GRAVITY, (location[0]) + popupWidth / 2, location[1] + view.getHeight() + yOffset);
-
-        this.maskHeight = getScreenH(context) - getStatusHeight((Activity) context) - view.getHeight() - yOffset;
-        maskGravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
-        showAsDropDown(view, 0, yOffset);
+        if (context != null) {
+            this.maskHeight = getScreenH(context) - getStatusHeight((Activity) context) - view.getHeight() - yOffset;
+            maskGravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
+            showAsDropDown(view, 0, yOffset);
+        }
     }
 
     // 注册广播接收器，接收暗屏广播，锁屏广播
@@ -178,7 +185,7 @@ public abstract class ZPopupWindow extends PopupWindow {
         maskView.setOnKeyListener(new OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                if (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_HOME) {
                     removeMaskView();
                     return true;
                 }

@@ -44,7 +44,8 @@ public class ZPopupWindowUtil {
     public void clearZPopupWindow() {
         if (mDatas != null) {
             for (ZPopupWindow zPopupWindow : mDatas) {
-                zPopupWindow.dismiss();
+                if (zPopupWindow != null)
+                    zPopupWindow.dismiss();
             }
             mDatas.clear();
         }
