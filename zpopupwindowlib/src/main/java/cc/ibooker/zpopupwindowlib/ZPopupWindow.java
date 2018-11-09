@@ -30,7 +30,7 @@ public abstract class ZPopupWindow extends PopupWindow {
     private Context context;
     private WindowManager wm;
     private View maskView;
-    private int maskHeight = 0;
+    private int maskHeight;
     private int maskGravity = Gravity.CENTER;
 
     public ZPopupWindow(Context context) {
