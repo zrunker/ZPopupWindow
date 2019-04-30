@@ -32,8 +32,18 @@ public abstract class ZPopupWindow extends PopupWindow {
     private View maskView;
     private int maskHeight;
     private int maskGravity = Gravity.CENTER;
+    private boolean isOpenManager = true;
+    private boolean isOpenMutex = true;
 
     public ZPopupWindow(Context context) {
+        this(context, true);
+    }
+
+    public ZPopupWindow(Context context, boolean isOpenManager) {
+        this(context, isOpenManager, true);
+    }
+
+    public ZPopupWindow(Context context, boolean isOpenManager, boolean isOpenMutex) {
         super(context);
         this.context = context;
         setContentView(generateCustomView(context));
@@ -46,7 +56,10 @@ public abstract class ZPopupWindow extends PopupWindow {
         setBackgroundDrawable(context.getResources().getDrawable(android.R.color.transparent));
         setAnimationStyle(R.style.BottomPushPopupWindow);
         // 关闭所有ZPopupWindow
-        ZPopupWindowUtil.getInstance().clearZPopupWindow();
+        this.isOpenManager = isOpenManager;
+        this.isOpenMutex = isOpenMutex;
+        if (isOpenManager && isOpenMutex)
+            ZPopupWindowUtil.getInstance().clearZPopupWindowsKeepThis(this);
         // 注册相应广播
         regReceiver();
     }
@@ -58,12 +71,33 @@ public abstract class ZPopupWindow extends PopupWindow {
     public void showAtLocation(View parent, int gravity, int x, int y) {
         addMaskView(parent.getWindowToken(), maskHeight, maskGravity);
         super.showAtLocation(parent, gravity, x, y);
+        if (isOpenManager) {
+            ZPopupWindowUtil.getInstance().addZPopupWindow(this);
+            if (isOpenMutex)
+                ZPopupWindowUtil.getInstance().clearZPopupWindowsKeepThis(this);
+        }
     }
 
     @Override
     public void showAsDropDown(View anchor, int xoff, int yoff) {
         addMaskView(anchor.getWindowToken(), maskHeight, maskGravity);
         super.showAsDropDown(anchor, xoff, yoff);
+        if (isOpenManager) {
+            ZPopupWindowUtil.getInstance().addZPopupWindow(this);
+            if (isOpenMutex)
+                ZPopupWindowUtil.getInstance().clearZPopupWindowsKeepThis(this);
+        }
+    }
+
+    @Override
+    public void showAsDropDown(View anchor) {
+        addMaskView(anchor.getWindowToken(), maskHeight, maskGravity);
+        super.showAsDropDown(anchor);
+        if (isOpenManager) {
+            ZPopupWindowUtil.getInstance().addZPopupWindow(this);
+            if (isOpenMutex)
+                ZPopupWindowUtil.getInstance().clearZPopupWindowsKeepThis(this);
+        }
     }
 
     @Override
@@ -82,13 +116,15 @@ public abstract class ZPopupWindow extends PopupWindow {
         // 刷新界面
         removeMaskView();
         super.dismiss();
+        if (isOpenManager)
+            ZPopupWindowUtil.getInstance().removeZPopupWindow(this);
     }
 
     /**
      * 显示在界面的底部
      */
     public void showBottom() {
-        if (context != null)
+        if (context != null && !isShowing())
             showAtLocation(((Activity) context).getWindow().getDecorView(), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
     }
 
@@ -96,7 +132,7 @@ public abstract class ZPopupWindow extends PopupWindow {
      * 显示在界面的顶部
      */
     public void showTop() {
-        if (context != null)
+        if (context != null && !isShowing())
             showAtLocation(((Activity) context).getWindow().getDecorView(), Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
     }
 
@@ -107,7 +143,7 @@ public abstract class ZPopupWindow extends PopupWindow {
      * @param yOffset Y轴偏移量
      */
     public void showViewTop(View view, int yOffset) {
-        if (context != null) {
+        if (context != null && !isShowing()) {
             this.maskHeight = getScreenH(context) - view.getHeight() - yOffset;
             // 获取需要在其上方显示的控件的位置信息
             int[] location = new int[2];
@@ -140,7 +176,7 @@ public abstract class ZPopupWindow extends PopupWindow {
 //        // 在控件上方显示
 //        maskGravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
 //        showAtLocation(view, Gravity.NO_GRAVITY, (location[0]) + popupWidth / 2, location[1] + view.getHeight() + yOffset);
-        if (context != null) {
+        if (context != null && !isShowing()) {
             this.maskHeight = getScreenH(context) - getStatusHeight((Activity) context) - view.getHeight() - yOffset;
             maskGravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
             showAsDropDown(view, 0, yOffset);
@@ -154,11 +190,12 @@ public abstract class ZPopupWindow extends PopupWindow {
         filter.addAction(Intent.ACTION_USER_PRESENT);
         context.registerReceiver(receiver, filter);
         // 广播开启的同时，添加到管理类
-        ZPopupWindowUtil.getInstance().clearZPopupWindow();
-        ZPopupWindowUtil.getInstance().addZPopupWindow(this);
+        if (isOpenManager) {
+            ZPopupWindowUtil.getInstance().clearZPopupWindows();
+        }
     }
 
-    // 定义一个广播接收器，帮助关闭PopuWindow
+    // 定义一个广播接收器，帮助关闭PopupWindow
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context arg0, Intent intent) {

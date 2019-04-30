@@ -26,28 +26,43 @@ public class ZPopupWindowUtil {
     }
 
     // 添加窗体
-    public void addZPopupWindow(ZPopupWindow data) {
+    public synchronized void addZPopupWindow(ZPopupWindow zPopupWindow) {
         if (mDatas == null)
             mDatas = new ArrayList<>();
-        mDatas.add(data);
+        if (zPopupWindow != null && !mDatas.contains(zPopupWindow))
+            mDatas.add(zPopupWindow);
     }
 
     // 移除窗体
-    public void removeZPopupWindow(ZPopupWindow data) {
-        if (mDatas != null) {
-            mDatas.remove(data);
-            mDatas.clear();
+    public synchronized void removeZPopupWindow(ZPopupWindow zPopupWindow) {
+        if (mDatas != null && zPopupWindow != null) {
+            if (zPopupWindow.isShowing())
+                zPopupWindow.dismiss();
+            mDatas.remove(zPopupWindow);
         }
     }
 
     // 清空数据
-    public void clearZPopupWindow() {
+    public synchronized void clearZPopupWindows() {
         if (mDatas != null) {
             for (ZPopupWindow zPopupWindow : mDatas) {
                 if (zPopupWindow != null)
                     zPopupWindow.dismiss();
             }
             mDatas.clear();
+        }
+    }
+
+    // 保留当前PopupWindow，移除其他所有
+    public synchronized void clearZPopupWindowsKeepThis(ZPopupWindow zPopupWindow) {
+        if (mDatas != null) {
+            for (int i = 0; i < mDatas.size(); i++) {
+                ZPopupWindow data = mDatas.get(i);
+                if (data != null && data != zPopupWindow) {
+                    data.dismiss();
+                    mDatas.remove(data);
+                }
+            }
         }
     }
 }
