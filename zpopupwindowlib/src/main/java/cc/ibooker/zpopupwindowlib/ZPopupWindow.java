@@ -108,7 +108,7 @@ public abstract class ZPopupWindow extends PopupWindow {
     @Override
     public void dismiss() {
         try {
-            if (receiver != null) // 注销广播
+            if (receiver != null && context != null) // 注销广播
                 context.unregisterReceiver(receiver);
         } catch (Exception e) {
             e.printStackTrace();
