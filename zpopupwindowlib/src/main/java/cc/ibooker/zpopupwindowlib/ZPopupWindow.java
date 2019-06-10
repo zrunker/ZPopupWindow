@@ -234,7 +234,7 @@ public abstract class ZPopupWindow extends PopupWindow {
 
     // 移除遮罩层
     private void removeMaskView() {
-        if (maskView != null) {
+        if (maskView != null && maskView.getWindowToken() != null && wm != null) {
             wm.removeViewImmediate(maskView);
             maskView = null;
         }
