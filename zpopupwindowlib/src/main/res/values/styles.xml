@@ -1,19 +1,19 @@
 <resources>
 
     <!-- 自定义BottomPushPopupWindow动画，从底部弹出 -->
-    <style name="BottomPushPopupWindow" parent="android:Animation">
+    <style name="ZPopupWindow_BottomPushPopupWindow" parent="android:Animation">
         <!-- 进入时的动画 -->
-        <item name="android:windowEnterAnimation">@anim/pw_push_bottom_in</item>
+        <item name="android:windowEnterAnimation">@anim/zpopupwindow_pw_push_bottom_in</item>
         <!-- 退出时的动画 -->
-        <item name="android:windowExitAnimation">@anim/pw_push_bottom_out</item>
+        <item name="android:windowExitAnimation">@anim/zpopupwindow_pw_push_bottom_out</item>
     </style>
 
     <!-- 自定义TopPushPopupWindow动画，从顶部弹出 -->
-    <style name="TopPushPopupWindow" parent="android:Animation">
+    <style name="ZPopupWindow_TopPushPopupWindow" parent="android:Animation">
         <!-- 进入时的动画 -->
-        <item name="android:windowEnterAnimation">@anim/pw_push_top_in</item>
+        <item name="android:windowEnterAnimation">@anim/zpopupwindow_pw_push_top_in</item>
         <!-- 退出时的动画 -->
-        <item name="android:windowExitAnimation">@anim/pw_push_top_out</item>
+        <item name="android:windowExitAnimation">@anim/zpopupwindow_pw_push_top_out</item>
     </style>
 
 </resources>

@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
                 if (diyPopupWindow == null) {
                     diyPopupWindow = new DiyPopupWindow(MainActivity.this);
                 }
-                diyPopupWindow.setAnimationStyle(cc.ibooker.zpopupwindowlib.R.style.TopPushPopupWindow);
+                diyPopupWindow.setAnimationStyle(cc.ibooker.zpopupwindowlib.R.style.ZPopupWindow_TopPushPopupWindow);
                 diyPopupWindow.showTop();
             }
         });
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
                 if (diyPopupWindow == null) {
                     diyPopupWindow = new DiyPopupWindow(MainActivity.this);
                 }
-                diyPopupWindow.setAnimationStyle(cc.ibooker.zpopupwindowlib.R.style.BottomPushPopupWindow);
+                diyPopupWindow.setAnimationStyle(cc.ibooker.zpopupwindowlib.R.style.ZPopupWindow_BottomPushPopupWindow);
                 diyPopupWindow.showBottom();
             }
         });

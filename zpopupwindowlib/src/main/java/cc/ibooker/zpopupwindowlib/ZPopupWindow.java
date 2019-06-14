@@ -54,7 +54,7 @@ public abstract class ZPopupWindow extends PopupWindow {
         setOutsideTouchable(true);
         setFocusable(true);
         setBackgroundDrawable(context.getResources().getDrawable(android.R.color.transparent));
-        setAnimationStyle(R.style.BottomPushPopupWindow);
+        setAnimationStyle(R.style.ZPopupWindow_BottomPushPopupWindow);
         // 关闭所有ZPopupWindow
         this.isOpenManager = isOpenManager;
         this.isOpenMutex = isOpenMutex;
