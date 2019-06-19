@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (diyPopupWindow == null) {
                     diyPopupWindow = new DiyPopupWindow(MainActivity.this);
+                    diyPopupWindow.setMaskViewBackColor(0x6f000000);
                 }
                 diyPopupWindow.setAnimationStyle(cc.ibooker.zpopupwindowlib.R.style.ZPopupWindow_TopPushPopupWindow);
                 diyPopupWindow.showTop();

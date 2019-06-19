@@ -34,6 +34,7 @@ public abstract class ZPopupWindow extends PopupWindow {
     private int maskGravity = Gravity.CENTER;
     private boolean isOpenManager = true;
     private boolean isOpenMutex = true;
+    private int maskViewBackColor = 0x9f000000;
 
     public ZPopupWindow(Context context) {
         this(context, true);
@@ -41,6 +42,11 @@ public abstract class ZPopupWindow extends PopupWindow {
 
     public ZPopupWindow(Context context, boolean isOpenManager) {
         this(context, isOpenManager, true);
+    }
+
+    public ZPopupWindow(Context context, boolean isOpenManager, boolean isOpenMutex, int maskViewBackColor) {
+        this(context, isOpenManager, isOpenMutex);
+        this.maskViewBackColor = maskViewBackColor;
     }
 
     public ZPopupWindow(Context context, boolean isOpenManager, boolean isOpenMutex) {
@@ -62,6 +68,12 @@ public abstract class ZPopupWindow extends PopupWindow {
             ZPopupWindowUtil.getInstance().clearZPopupWindowsKeepThis(this);
         // 注册相应广播
         regReceiver();
+    }
+
+    // 设置遮罩层颜色
+    public ZPopupWindow setMaskViewBackColor(int color) {
+        this.maskViewBackColor = color;
+        return this;
     }
 
     // 抽象方法
@@ -217,7 +229,7 @@ public abstract class ZPopupWindow extends PopupWindow {
         params.windowAnimations = android.R.style.Animation_Toast;
         params.gravity = gravity;
         maskView = new View(context);
-        maskView.setBackgroundColor(0x9f000000);
+        maskView.setBackgroundColor(maskViewBackColor);
         maskView.setFitsSystemWindows(false);
         maskView.setOnKeyListener(new OnKeyListener() {
             @Override
