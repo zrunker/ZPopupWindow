@@ -31,7 +31,7 @@ public abstract class ZPopupWindow extends PopupWindow {
     private WindowManager wm;
     private View maskView;
     private int maskHeight;
-    private int maskGravity = Gravity.CENTER;
+    private int maskGravity = Gravity.CENTER | Gravity.TOP;
     private boolean isOpenManager = true;
     private boolean isOpenMutex = true;
     private int maskViewBackColor = 0x9f000000;
@@ -226,8 +226,10 @@ public abstract class ZPopupWindow extends PopupWindow {
         params.format = PixelFormat.TRANSLUCENT;
         params.type = WindowManager.LayoutParams.TYPE_APPLICATION_PANEL;
         params.token = token;
-        params.windowAnimations = android.R.style.Animation_Toast;
+//        params.windowAnimations = android.R.style.Animation_Toast;
         params.gravity = gravity;
+        params.x = 0;
+        params.y = 0;
         maskView = new View(context);
         maskView.setBackgroundColor(maskViewBackColor);
         maskView.setFitsSystemWindows(false);
