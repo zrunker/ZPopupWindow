@@ -32,8 +32,8 @@ public abstract class ZPopupWindow extends PopupWindow {
     private View maskView;
     private int maskHeight;
     private int maskGravity = Gravity.CENTER | Gravity.TOP;
-    private boolean isOpenManager = true;
-    private boolean isOpenMutex = true;
+    private boolean isOpenManager;
+    private boolean isOpenMutex;
     private int maskViewBackColor = 0x9f000000;
 
     public ZPopupWindow(Context context) {
@@ -66,6 +66,9 @@ public abstract class ZPopupWindow extends PopupWindow {
         this.isOpenMutex = isOpenMutex;
         if (isOpenManager && isOpenMutex)
             ZPopupWindowUtil.getInstance().clearZPopupWindowsKeepThis(this);
+        // 添加到管理类
+        if (isOpenManager)
+            ZPopupWindowUtil.getInstance().addZPopupWindow(this);
         // 注册相应广播
         regReceiver();
     }
@@ -88,6 +91,8 @@ public abstract class ZPopupWindow extends PopupWindow {
             if (isOpenMutex)
                 ZPopupWindowUtil.getInstance().clearZPopupWindowsKeepThis(this);
         }
+        // 注册广播
+        regReceiver();
     }
 
     @Override
@@ -99,6 +104,8 @@ public abstract class ZPopupWindow extends PopupWindow {
             if (isOpenMutex)
                 ZPopupWindowUtil.getInstance().clearZPopupWindowsKeepThis(this);
         }
+        // 注册广播
+        regReceiver();
     }
 
     @Override
@@ -110,6 +117,8 @@ public abstract class ZPopupWindow extends PopupWindow {
             if (isOpenMutex)
                 ZPopupWindowUtil.getInstance().clearZPopupWindowsKeepThis(this);
         }
+        // 注册广播
+        regReceiver();
     }
 
     @Override
@@ -120,8 +129,10 @@ public abstract class ZPopupWindow extends PopupWindow {
     @Override
     public void dismiss() {
         try {
-            if (receiver != null && context != null) // 注销广播
+            if (receiver != null && context != null) {// 注销广播
                 context.unregisterReceiver(receiver);
+                receiver = null;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -201,10 +212,6 @@ public abstract class ZPopupWindow extends PopupWindow {
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         filter.addAction(Intent.ACTION_USER_PRESENT);
         context.registerReceiver(receiver, filter);
-        // 广播开启的同时，添加到管理类
-        if (isOpenManager) {
-            ZPopupWindowUtil.getInstance().clearZPopupWindows();
-        }
     }
 
     // 定义一个广播接收器，帮助关闭PopupWindow
