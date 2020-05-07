@@ -36,6 +36,14 @@ public abstract class ZPopupWindow extends PopupWindow {
     private boolean isOpenMutex;
     private int maskViewBackColor = 0x9f000000;
 
+    public void setOpenMutex(boolean openMutex) {
+        isOpenMutex = openMutex;
+    }
+
+    public void setOpenManager(boolean openManager) {
+        isOpenManager = openManager;
+    }
+
     public ZPopupWindow(Context context) {
         this(context, true);
     }
