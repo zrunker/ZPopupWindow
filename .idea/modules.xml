@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ZPopupWindow.iml" filepath="$PROJECT_DIR$/ZPopupWindow.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/ZPopupWindow-app.iml" filepath="$PROJECT_DIR$/app/ZPopupWindow-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/zpopupwindowlib/ZPopupWindow-zpopupwindowlib.iml" filepath="$PROJECT_DIR$/zpopupwindowlib/ZPopupWindow-zpopupwindowlib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android-ZPopupWindow.iml" filepath="$PROJECT_DIR$/android-ZPopupWindow.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/zpopupwindowlib/zpopupwindowlib.iml" filepath="$PROJECT_DIR$/zpopupwindowlib/zpopupwindowlib.iml" />
     </modules>

@@ -58,7 +58,8 @@ public class ZPopupWindowUtil {
         if (mDatas != null) {
             for (int i = 0; i < mDatas.size(); i++) {
                 ZPopupWindow data = mDatas.get(i);
-                if (data != null && data != zPopupWindow && mDatas.contains(data)) {
+                if (data != null && data != zPopupWindow
+                        && !data.equals(zPopupWindow) && mDatas.contains(data)) {
                     data.dismiss();
                     mDatas.remove(data);
                 }
