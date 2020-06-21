@@ -32,8 +32,8 @@ public abstract class ZPopupWindow extends PopupWindow {
     private View maskView;
     private int maskHeight;
     private int maskGravity = Gravity.CENTER | Gravity.TOP;
-    private boolean isOpenManager = true;
-    private boolean isOpenMutex = true;
+    private boolean isOpenManager = true;// 是否打开PopupWindow管理
+    private boolean isOpenMutex = true;// 是否清空已有PopupWindow，互斥
     private int maskViewBackColor = 0x9f000000;
 
     public ZPopupWindow(Context context) {
@@ -52,13 +52,14 @@ public abstract class ZPopupWindow extends PopupWindow {
     public ZPopupWindow(Context context, boolean isOpenManager, boolean isOpenMutex) {
         super(context);
         this.context = context;
-        setContentView(generateCustomView(context));
         this.maskHeight = getScreenH(context);
-        wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        this.wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        setContentView(generateCustomView(context));
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         setOutsideTouchable(true);
         setFocusable(true);
+        setClippingEnabled(false);
         setBackgroundDrawable(context.getResources().getDrawable(android.R.color.transparent));
         setAnimationStyle(R.style.ZPopupWindow_BottomPushPopupWindow);
         // 关闭所有ZPopupWindow
