@@ -81,6 +81,7 @@ public abstract class ZPopupWindow extends PopupWindow {
         // 关闭所有ZPopupWindow
         this.isOpenManager = isOpenManager;
         this.isOpenMutex = isOpenMutex;
+        this.isOpenRegReceiver = isOpenRegReceiver;
         if (isOpenManager && isOpenMutex)
             ZPopupWindowUtil.getInstance().clearZPopupWindowsKeepThis(this);
         // 添加到管理类
