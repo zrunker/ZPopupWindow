@@ -11,6 +11,7 @@ import android.os.IBinder;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
@@ -287,6 +288,22 @@ public abstract class ZPopupWindow extends PopupWindow {
             wm.removeViewImmediate(maskView);
             maskView = null;
         }
+    }
+
+    public ZPopupWindow setOutsideTouch(boolean able) {
+        setOutsideTouchable(able);
+        setTouchInterceptor(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (!isOutsideTouchable()) {
+                    View mView = getContentView();
+                    if (null != mView)
+                        mView.dispatchTouchEvent(event);
+                }
+                return isFocusable() && !isOutsideTouchable();
+            }
+        });
+        return this;
     }
 
     /**
