@@ -32,16 +32,24 @@ public abstract class ZPopupWindow extends PopupWindow {
     private View maskView;
     private int maskHeight;
     private int maskGravity = Gravity.CENTER | Gravity.TOP;
-    private boolean isOpenManager = true;// 是否打开PopupWindow管理
-    private boolean isOpenMutex = true;// 是否清空已有PopupWindow，互斥
+    private boolean isOpenManager;// 是否打开PopupWindow管理，默认打开
+    private boolean isOpenMutex;// 是否清空已有PopupWindow，互斥，默认开启
+    private boolean isOpenRegReceiver = true;// 是否开启注册广播，默认开启
     private int maskViewBackColor = 0x9f000000;
 
-    public void setOpenMutex(boolean openMutex) {
+    public ZPopupWindow setOpenMutex(boolean openMutex) {
         isOpenMutex = openMutex;
+        return this;
     }
 
-    public void setOpenManager(boolean openManager) {
+    public ZPopupWindow setOpenManager(boolean openManager) {
         isOpenManager = openManager;
+        return this;
+    }
+
+    public ZPopupWindow setOpenRegReceiver(boolean openRegReceiver) {
+        isOpenRegReceiver = openRegReceiver;
+        return this;
     }
 
     public ZPopupWindow(Context context) {
@@ -49,15 +57,15 @@ public abstract class ZPopupWindow extends PopupWindow {
     }
 
     public ZPopupWindow(Context context, boolean isOpenManager) {
-        this(context, isOpenManager, true);
+        this(context, isOpenManager, true, true);
     }
 
-    public ZPopupWindow(Context context, boolean isOpenManager, boolean isOpenMutex, int maskViewBackColor) {
-        this(context, isOpenManager, isOpenMutex);
+    public ZPopupWindow(Context context, boolean isOpenManager, boolean isOpenMutex, boolean isOpenRegReceiver, int maskViewBackColor) {
+        this(context, isOpenManager, isOpenMutex, isOpenRegReceiver);
         this.maskViewBackColor = maskViewBackColor;
     }
 
-    public ZPopupWindow(Context context, boolean isOpenManager, boolean isOpenMutex) {
+    public ZPopupWindow(Context context, boolean isOpenManager, boolean isOpenMutex, boolean isOpenRegReceiver) {
         super(context);
         this.context = context;
         this.maskHeight = getScreenH(context);
@@ -79,7 +87,8 @@ public abstract class ZPopupWindow extends PopupWindow {
         if (isOpenManager)
             ZPopupWindowUtil.getInstance().addZPopupWindow(this);
         // 注册相应广播
-        regReceiver();
+        if (isOpenRegReceiver)
+            regReceiver();
     }
 
     // 设置遮罩层颜色
@@ -101,7 +110,8 @@ public abstract class ZPopupWindow extends PopupWindow {
                 ZPopupWindowUtil.getInstance().clearZPopupWindowsKeepThis(this);
         }
         // 注册广播
-        regReceiver();
+        if (isOpenRegReceiver)
+            regReceiver();
     }
 
     @Override
@@ -114,7 +124,8 @@ public abstract class ZPopupWindow extends PopupWindow {
                 ZPopupWindowUtil.getInstance().clearZPopupWindowsKeepThis(this);
         }
         // 注册广播
-        regReceiver();
+        if (isOpenRegReceiver)
+            regReceiver();
     }
 
     @Override
@@ -127,7 +138,8 @@ public abstract class ZPopupWindow extends PopupWindow {
                 ZPopupWindowUtil.getInstance().clearZPopupWindowsKeepThis(this);
         }
         // 注册广播
-        regReceiver();
+        if (isOpenRegReceiver)
+            regReceiver();
     }
 
     @Override
