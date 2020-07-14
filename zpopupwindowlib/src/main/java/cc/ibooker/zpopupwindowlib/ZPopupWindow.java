@@ -49,6 +49,9 @@ public abstract class ZPopupWindow extends PopupWindow {
 
     public ZPopupWindow setOpenRegReceiver(boolean openRegReceiver) {
         isOpenRegReceiver = openRegReceiver;
+        if (!isOpenRegReceiver && receiver != null && context != null) {
+            context.unregisterReceiver(receiver);
+        }
         return this;
     }
 
