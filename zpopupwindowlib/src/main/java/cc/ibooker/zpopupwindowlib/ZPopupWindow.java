@@ -34,7 +34,7 @@ public abstract class ZPopupWindow extends PopupWindow {
     private int maskGravity = Gravity.CENTER | Gravity.TOP;
     private boolean isOpenManager;// 是否打开PopupWindow管理，默认打开
     private boolean isOpenMutex;// 是否清空已有PopupWindow，互斥，默认开启
-    private boolean isOpenRegReceiver = true;// 是否开启注册广播，默认开启
+    private boolean isOpenRegReceiver;// 是否开启注册广播，默认开启
     private int maskViewBackColor = 0x9f000000;
 
     public ZPopupWindow setOpenMutex(boolean openMutex) {
@@ -269,7 +269,10 @@ public abstract class ZPopupWindow extends PopupWindow {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_HOME) {
-                    removeMaskView();
+                    if (onBackPressListener != null)
+                        onBackPressListener.onBackPress();
+                    else
+                        removeMaskView();
                     return true;
                 }
                 return false;
@@ -307,4 +310,13 @@ public abstract class ZPopupWindow extends PopupWindow {
         return frame.top;
     }
 
+    public interface OnBackPressListener {
+        void onBackPress();
+    }
+
+    private OnBackPressListener onBackPressListener;
+
+    public void setOnBackPressListener(OnBackPressListener onBackPressListener) {
+        this.onBackPressListener = onBackPressListener;
+    }
 }
