@@ -61,7 +61,7 @@ public abstract class ZPopupWindow extends PopupWindow {
     }
 
     public ZPopupWindow(Context context, boolean isOpenManager) {
-        this(context, isOpenManager, true, true);
+        this(context, isOpenManager, true, false);
     }
 
     public ZPopupWindow(Context context, boolean isOpenManager, boolean isOpenMutex, boolean isOpenRegReceiver, int maskViewBackColor) {
@@ -242,7 +242,7 @@ public abstract class ZPopupWindow extends PopupWindow {
     }
 
     // 反注册广播
-    private void unRegReceiver() {
+    public void unRegReceiver() {
         if (receiver != null && context != null)
             try {
                 context.unregisterReceiver(receiver);
