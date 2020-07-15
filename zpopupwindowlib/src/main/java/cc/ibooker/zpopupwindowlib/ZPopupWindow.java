@@ -92,6 +92,7 @@ public abstract class ZPopupWindow extends PopupWindow {
         if (isOpenManager)
             ZPopupWindowUtil.getInstance().addZPopupWindow(this);
         // 注册相应广播
+        unRegReceiver();
         if (isOpenRegReceiver)
             regReceiver();
     }
