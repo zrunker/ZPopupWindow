@@ -50,8 +50,8 @@ public abstract class ZPopupWindow extends PopupWindow {
 
     public ZPopupWindow setOpenRegReceiver(boolean openRegReceiver) {
         isOpenRegReceiver = openRegReceiver;
-        if (!isOpenRegReceiver && receiver != null && context != null) {
-            context.unregisterReceiver(receiver);
+        if (!isOpenRegReceiver) {
+            unRegReceiver();
         }
         return this;
     }
@@ -240,6 +240,16 @@ public abstract class ZPopupWindow extends PopupWindow {
         context.registerReceiver(receiver, filter);
     }
 
+    // 反注册广播
+    private void unRegReceiver() {
+        if (receiver != null && context != null)
+            try {
+                context.unregisterReceiver(receiver);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+    }
+
     // 定义一个广播接收器，帮助关闭PopupWindow
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -290,6 +300,7 @@ public abstract class ZPopupWindow extends PopupWindow {
         }
     }
 
+    // 设置点击外侧事件
     public ZPopupWindow setOutsideTouch(boolean able) {
         setOutsideTouchable(able);
         setTouchInterceptor(new View.OnTouchListener() {
