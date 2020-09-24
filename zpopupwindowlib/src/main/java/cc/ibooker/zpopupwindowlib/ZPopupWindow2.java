@@ -91,16 +91,18 @@ public abstract class ZPopupWindow2 extends PopupWindow {
 
     // 设置PopupWindow的背景透明度
     public ZPopupWindow2 setBackgroundAlpha(float alpha) {
-        Window window = ((Activity) context).getWindow();
-        if (window != null) {
-            WindowManager.LayoutParams lp = window.getAttributes();
-            lp.alpha = alpha;
-            if (alpha == 1) {
-                window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-            } else {
-                window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        if (context != null) {
+            Window window = ((Activity) context).getWindow();
+            if (window != null) {
+                WindowManager.LayoutParams lp = window.getAttributes();
+                lp.alpha = alpha;
+                if (alpha == 1) {
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+                } else {
+                    window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+                }
+                window.setAttributes(lp);
             }
-            window.setAttributes(lp);
         }
         return this;
     }
