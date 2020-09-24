@@ -57,7 +57,7 @@ public abstract class ZPopupWindow2 extends PopupWindow {
     }
 
     public ZPopupWindow2(@NonNull Context context, boolean isOpenManager, boolean isOpenMutex, boolean isOpenRegReceiver) {
-        this(context, isOpenManager, isOpenMutex, isOpenRegReceiver, 0x9f000000);
+        this(context, isOpenManager, isOpenMutex, isOpenRegReceiver, 0x000000);
     }
 
     public ZPopupWindow2(@NonNull Context context, boolean isOpenManager, boolean isOpenMutex, boolean isOpenRegReceiver, int maskViewBackColor) {
@@ -95,6 +95,11 @@ public abstract class ZPopupWindow2 extends PopupWindow {
         if (window != null) {
             WindowManager.LayoutParams lp = window.getAttributes();
             lp.alpha = alpha;
+            if (alpha == 1) {
+                window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            } else {
+                window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            }
             window.setAttributes(lp);
         }
         return this;
