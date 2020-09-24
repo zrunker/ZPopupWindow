@@ -117,6 +117,7 @@ public abstract class ZPopupWindow2 extends PopupWindow {
     // 设置透明度
     public ZPopupWindow2 setAlpha(float alpha) {
         this.alpha = alpha;
+        setBackgroundAlpha(alpha);
         return this;
     }
 
