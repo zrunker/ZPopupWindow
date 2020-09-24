@@ -5,51 +5,42 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.PixelFormat;
-import android.graphics.Rect;
-import android.os.IBinder;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
-import android.util.DisplayMetrics;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 
 /**
- * 自定义弹出的PopupWindow，增加半透明蒙层。
- * 实现原理：
- * 在弹出自定义的PopupWindow时，增加一个半透明蒙层view到窗口，并置于PopupWindow下方。
+ * 自定义弹出的PopupWindow，半透明。
  * 使用方法:
  * 继承BottomPushPopupWindow，编写generateCustomView添加自定义的view，调用show方法显示。
  *
  * @author 邹峰立
  */
-public abstract class ZPopupWindow extends PopupWindow {
+public abstract class ZPopupWindow2 extends PopupWindow {
     private Context context;
-    private WindowManager wm;
-    private View maskView;
-    private int maskHeight;
-    private int maskGravity = Gravity.CENTER | Gravity.TOP;
     private boolean isOpenManager;// 是否打开PopupWindow管理，默认打开
     private boolean isOpenMutex;// 是否清空已有PopupWindow，互斥，默认开启
     private boolean isOpenRegReceiver;// 是否开启注册广播，默认开启
-    private int maskViewBackColor = 0x9f000000;
+    private int maskViewBackColor;// 默认背景颜色 - 0x9f000000
+    private float alpha = 0.5f;// 默认透明度
 
-    public ZPopupWindow setOpenMutex(boolean openMutex) {
+    public ZPopupWindow2 setOpenMutex(boolean openMutex) {
         isOpenMutex = openMutex;
         return this;
     }
 
-    public ZPopupWindow setOpenManager(boolean openManager) {
+    public ZPopupWindow2 setOpenManager(boolean openManager) {
         isOpenManager = openManager;
         return this;
     }
 
-    public ZPopupWindow setOpenRegReceiver(boolean openRegReceiver) {
+    public ZPopupWindow2 setOpenRegReceiver(boolean openRegReceiver) {
         isOpenRegReceiver = openRegReceiver;
         if (!isOpenRegReceiver) {
             unRegReceiver();
@@ -57,36 +48,33 @@ public abstract class ZPopupWindow extends PopupWindow {
         return this;
     }
 
-    public ZPopupWindow(@NonNull Context context) {
+    public ZPopupWindow2(@NonNull Context context) {
         this(context, true);
     }
 
-    public ZPopupWindow(@NonNull Context context, boolean isOpenManager) {
+    public ZPopupWindow2(@NonNull Context context, boolean isOpenManager) {
         this(context, isOpenManager, true, false);
     }
 
-    public ZPopupWindow(@NonNull Context context, boolean isOpenManager, boolean isOpenMutex, boolean isOpenRegReceiver) {
+    public ZPopupWindow2(@NonNull Context context, boolean isOpenManager, boolean isOpenMutex, boolean isOpenRegReceiver) {
         this(context, isOpenManager, isOpenMutex, isOpenRegReceiver, 0x9f000000);
     }
 
-    public ZPopupWindow(@NonNull Context context, boolean isOpenManager, boolean isOpenMutex, boolean isOpenRegReceiver, int maskViewBackColor) {
+    public ZPopupWindow2(@NonNull Context context, boolean isOpenManager, boolean isOpenMutex, boolean isOpenRegReceiver, int maskViewBackColor) {
         super(context);
         this.context = context;
         this.isOpenManager = isOpenManager;
         this.isOpenMutex = isOpenMutex;
         this.isOpenRegReceiver = isOpenRegReceiver;
         this.maskViewBackColor = maskViewBackColor;
-        this.maskHeight = getScreenH(context);
-        this.wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         setContentView(generateCustomView(context));
         setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         setOutsideTouchable(true);
         setFocusable(true);
-//        setClippingEnabled(false);
-        setBackgroundDrawable(context.getResources().getDrawable(android.R.color.transparent));
+        setClippingEnabled(false);
         setAnimationStyle(R.style.ZPopupWindow_BottomPushPopupWindow);
-        // 管理ZPopupWindow
+        // PopupWindow管理
         if (isOpenManager && isOpenMutex)
             ZPopupWindowUtil.getInstance().clearZPopupWindowsKeepThis(this);
         // 添加到管理类
@@ -98,34 +86,58 @@ public abstract class ZPopupWindow extends PopupWindow {
             regReceiver();
     }
 
-    // 设置遮罩层颜色
-    public ZPopupWindow setMaskViewBackColor(int color) {
-        this.maskViewBackColor = color;
-        return this;
-    }
-
     // 抽象方法
     protected abstract View generateCustomView(Context context);
 
+    // 设置PopupWindow的背景透明度
+    public ZPopupWindow2 setBackgroundAlpha(float alpha) {
+        Window window = ((Activity) context).getWindow();
+        if (window != null) {
+            WindowManager.LayoutParams lp = window.getAttributes();
+            lp.alpha = alpha;
+            window.setAttributes(lp);
+        }
+        return this;
+    }
+
+    // 设置遮罩层颜色
+    public ZPopupWindow2 setMaskViewBackColor(int color) {
+        this.maskViewBackColor = color;
+        setBackgroundDrawable(new ColorDrawable(maskViewBackColor));
+        return this;
+    }
+
+    // 设置透明度
+    public ZPopupWindow2 setAlpha(float alpha) {
+        this.alpha = alpha;
+        return this;
+    }
+
     @Override
     public void showAtLocation(View parent, int gravity, int x, int y) {
-        addMaskView(parent.getWindowToken(), maskHeight, maskGravity);
+        showBefore();
         super.showAtLocation(parent, gravity, x, y);
         showAfter();
     }
 
     @Override
     public void showAsDropDown(View anchor, int xoff, int yoff) {
-        addMaskView(anchor.getWindowToken(), maskHeight, maskGravity);
+        showBefore();
         super.showAsDropDown(anchor, xoff, yoff);
         showAfter();
     }
 
     @Override
     public void showAsDropDown(View anchor) {
-        addMaskView(anchor.getWindowToken(), maskHeight, maskGravity);
+        showBefore();
         super.showAsDropDown(anchor);
         showAfter();
+    }
+
+    // 展示之前
+    private void showBefore() {
+        setBackgroundDrawable(new ColorDrawable(maskViewBackColor));
+        setBackgroundAlpha(alpha);
     }
 
     // 展示之后
@@ -142,6 +154,7 @@ public abstract class ZPopupWindow extends PopupWindow {
 
     @Override
     public void dismiss() {
+        setBackgroundAlpha(1f);
         try {
             if (receiver != null && context != null) {// 注销广播
                 context.unregisterReceiver(receiver);
@@ -150,8 +163,6 @@ public abstract class ZPopupWindow extends PopupWindow {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // 刷新界面
-        removeMaskView();
         super.dismiss();
         if (isOpenManager)
             ZPopupWindowUtil.getInstance().removeZPopupWindow(this);
@@ -181,7 +192,6 @@ public abstract class ZPopupWindow extends PopupWindow {
      */
     public void showViewTop(View view, int yOffset) {
         if (context != null && !isShowing()) {
-            this.maskHeight = getScreenH(context) - view.getHeight() - yOffset;
             // 获取需要在其上方显示的控件的位置信息
             int[] location = new int[2];
             view.getLocationOnScreen(location);
@@ -190,7 +200,6 @@ public abstract class ZPopupWindow extends PopupWindow {
             int popupHeight = this.getContentView().getMeasuredHeight();
 //            int popupWidth = this.getContentView().getMeasuredWidth();
             //在控件上方显示
-            maskGravity = Gravity.TOP | Gravity.CENTER_HORIZONTAL;
             showAtLocation(view, Gravity.NO_GRAVITY, 0, location[1] - popupHeight - yOffset);
         }
     }
@@ -214,8 +223,6 @@ public abstract class ZPopupWindow extends PopupWindow {
 //        maskGravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
 //        showAtLocation(view, Gravity.NO_GRAVITY, (location[0]) + popupWidth / 2, location[1] + view.getHeight() + yOffset);
         if (context != null && !isShowing()) {
-            this.maskHeight = getScreenH(context) - view.getHeight() - yOffset;
-            maskGravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
             showAsDropDown(view, 0, yOffset);
         }
     }
@@ -249,47 +256,8 @@ public abstract class ZPopupWindow extends PopupWindow {
         }
     };
 
-    // 添加遮罩层
-    private void addMaskView(IBinder token, int maskHeight, int gravity) {
-        WindowManager.LayoutParams params = new WindowManager.LayoutParams();
-        params.width = WindowManager.LayoutParams.MATCH_PARENT;
-        params.height = maskHeight;
-        params.format = PixelFormat.TRANSLUCENT;
-        params.type = WindowManager.LayoutParams.TYPE_APPLICATION_PANEL;
-        params.token = token;
-//        params.windowAnimations = android.R.style.Animation_Toast;
-        params.gravity = gravity;
-        params.x = 0;
-        params.y = 0;
-        maskView = new View(context);
-        maskView.setBackgroundColor(maskViewBackColor);
-        maskView.setFitsSystemWindows(false);
-        maskView.setOnKeyListener(new OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_HOME) {
-                    if (onBackPressListener != null)
-                        onBackPressListener.onBackPress();
-                    else
-                        removeMaskView();
-                    return true;
-                }
-                return false;
-            }
-        });
-        wm.addView(maskView, params);
-    }
-
-    // 移除遮罩层
-    private void removeMaskView() {
-        if (maskView != null && maskView.getWindowToken() != null && wm != null) {
-            wm.removeViewImmediate(maskView);
-            maskView = null;
-        }
-    }
-
     // 设置点击外侧事件
-    public ZPopupWindow setOutsideTouch(boolean able) {
+    public ZPopupWindow2 setOutsideTouch(boolean able) {
         setOutsideTouchable(able);
         setTouchInterceptor(new View.OnTouchListener() {
             @Override
@@ -305,35 +273,4 @@ public abstract class ZPopupWindow extends PopupWindow {
         return this;
     }
 
-    /**
-     * 获取屏幕高度（包括状态栏的高度） - px
-     */
-    private int getScreenH(Context aty) {
-        WindowManager wm = (WindowManager) aty.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        if (wm != null) {
-            wm.getDefaultDisplay().getMetrics(outMetrics);
-        }
-        return outMetrics.heightPixels;
-    }
-
-    /**
-     * 获取状态栏高度
-     */
-    private int getStatusHeight(Activity activity) {
-        Rect frame = new Rect();
-        activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(frame);
-        return frame.top;
-    }
-
-    public interface OnBackPressListener {
-        void onBackPress();
-    }
-
-    private OnBackPressListener onBackPressListener;
-
-    public ZPopupWindow setOnBackPressListener(OnBackPressListener onBackPressListener) {
-        this.onBackPressListener = onBackPressListener;
-        return this;
-    }
 }

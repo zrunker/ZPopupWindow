@@ -1,13 +1,15 @@
 package cc.ibooker.zpopupwindowlib;
 
-import java.util.ArrayList;
+import android.widget.PopupWindow;
+
+import java.util.HashSet;
 
 /**
  * ZPopupWindow管理类
  * Created by 邹峰立 on 2017/3/24.
  */
 public class ZPopupWindowUtil {
-    private ArrayList<ZPopupWindow> mList = new ArrayList<>();
+    private HashSet<PopupWindow> mList = new HashSet<>();
 
     private static ZPopupWindowUtil bottomPushPopupWindowUtil;
 
@@ -17,24 +19,24 @@ public class ZPopupWindowUtil {
         return bottomPushPopupWindowUtil;
     }
 
-    public ArrayList<ZPopupWindow> getmList() {
+    public HashSet<PopupWindow> getList() {
         return mList;
     }
 
-    public void setmList(ArrayList<ZPopupWindow> mList) {
+    public void setList(HashSet<PopupWindow> mList) {
         this.mList = mList;
     }
 
     // 添加窗体
-    public synchronized void addZPopupWindow(ZPopupWindow zPopupWindow) {
+    public synchronized void addZPopupWindow(PopupWindow zPopupWindow) {
         if (mList == null)
-            mList = new ArrayList<>();
-        if (zPopupWindow != null && !mList.contains(zPopupWindow))
+            mList = new HashSet<>();
+        if (zPopupWindow != null)
             mList.add(zPopupWindow);
     }
 
     // 移除窗体
-    public synchronized void removeZPopupWindow(ZPopupWindow zPopupWindow) {
+    public synchronized void removeZPopupWindow(PopupWindow zPopupWindow) {
         if (mList != null && zPopupWindow != null) {
             if (zPopupWindow.isShowing())
                 zPopupWindow.dismiss();
@@ -45,7 +47,7 @@ public class ZPopupWindowUtil {
     // 清空数据
     public synchronized void clearZPopupWindows() {
         if (mList != null) {
-            for (ZPopupWindow zPopupWindow : mList) {
+            for (PopupWindow zPopupWindow : mList) {
                 if (zPopupWindow != null)
                     zPopupWindow.dismiss();
             }
@@ -54,10 +56,9 @@ public class ZPopupWindowUtil {
     }
 
     // 保留当前PopupWindow，移除其他所有
-    public synchronized void clearZPopupWindowsKeepThis(ZPopupWindow zPopupWindow) {
+    public synchronized void clearZPopupWindowsKeepThis(PopupWindow zPopupWindow) {
         if (mList != null) {
-            for (int i = 0; i < mList.size(); i++) {
-                ZPopupWindow data = mList.get(i);
+            for (PopupWindow data : mList) {
                 if (data != null && data != zPopupWindow
                         && !data.equals(zPopupWindow) && mList.contains(data)) {
                     data.dismiss();
