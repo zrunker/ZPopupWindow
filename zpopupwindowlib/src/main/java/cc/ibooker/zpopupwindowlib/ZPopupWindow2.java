@@ -145,11 +145,11 @@ public abstract class ZPopupWindow2 extends PopupWindow {
     // 展示之前
     private void showBefore() {
         setBackgroundDrawable(new ColorDrawable(maskViewBackColor));
+        setBackgroundAlpha(alpha);
     }
 
     // 展示之后
     private void showAfter() {
-        setBackgroundAlpha(alpha);
         if (isOpenManager) {
             ZPopupWindowUtil.getInstance().addZPopupWindow(this);
             if (isOpenMutex)
