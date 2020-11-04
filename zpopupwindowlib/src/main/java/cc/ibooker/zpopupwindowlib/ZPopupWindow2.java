@@ -73,7 +73,7 @@ public abstract class ZPopupWindow2 extends PopupWindow {
         setOutsideTouchable(true);
         setFocusable(true);
         setClippingEnabled(false);
-        setAnimationStyle(R.style.ZPopupWindow_BottomPushPopupWindow);
+        setAnimationStyle(android.R.style.Animation_Toast);
         // PopupWindow管理
         if (isOpenManager && isOpenMutex)
             ZPopupWindowUtil.getInstance().clearZPopupWindowsKeepThis(this);
@@ -180,16 +180,20 @@ public abstract class ZPopupWindow2 extends PopupWindow {
      * 显示在界面的底部
      */
     public void showBottom() {
-        if (context != null && !isShowing())
+        if (context != null && !isShowing()) {
+            setAnimationStyle(R.style.ZPopupWindow_BottomPushPopupWindow);
             showAtLocation(((Activity) context).getWindow().getDecorView(), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+        }
     }
 
     /**
      * 显示在界面的顶部
      */
     public void showTop() {
-        if (context != null && !isShowing())
+        if (context != null && !isShowing()) {
+            setAnimationStyle(R.style.ZPopupWindow_TopPushPopupWindow);
             showAtLocation(((Activity) context).getWindow().getDecorView(), Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
+        }
     }
 
     /**

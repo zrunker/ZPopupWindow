@@ -85,7 +85,7 @@ public abstract class ZPopupWindow extends PopupWindow {
         setFocusable(true);
 //        setClippingEnabled(false);
         setBackgroundDrawable(context.getResources().getDrawable(android.R.color.transparent));
-        setAnimationStyle(R.style.ZPopupWindow_BottomPushPopupWindow);
+        setAnimationStyle(android.R.style.Animation_Toast);
         // 管理ZPopupWindow
         if (isOpenManager && isOpenMutex)
             ZPopupWindowUtil.getInstance().clearZPopupWindowsKeepThis(this);
@@ -161,16 +161,20 @@ public abstract class ZPopupWindow extends PopupWindow {
      * 显示在界面的底部
      */
     public void showBottom() {
-        if (context != null && !isShowing())
+        if (context != null && !isShowing()) {
+            setAnimationStyle(R.style.ZPopupWindow_BottomPushPopupWindow);
             showAtLocation(((Activity) context).getWindow().getDecorView(), Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
+        }
     }
 
     /**
      * 显示在界面的顶部
      */
     public void showTop() {
-        if (context != null && !isShowing())
+        if (context != null && !isShowing()) {
+            setAnimationStyle(R.style.ZPopupWindow_TopPushPopupWindow);
             showAtLocation(((Activity) context).getWindow().getDecorView(), Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
+        }
     }
 
     /**
@@ -181,6 +185,7 @@ public abstract class ZPopupWindow extends PopupWindow {
      */
     public void showViewTop(View view, int yOffset) {
         if (context != null && !isShowing()) {
+            setAnimationStyle(android.R.style.Animation_Toast);
             this.maskHeight = getScreenH(context) - view.getHeight() - yOffset;
             // 获取需要在其上方显示的控件的位置信息
             int[] location = new int[2];
@@ -214,6 +219,7 @@ public abstract class ZPopupWindow extends PopupWindow {
 //        maskGravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
 //        showAtLocation(view, Gravity.NO_GRAVITY, (location[0]) + popupWidth / 2, location[1] + view.getHeight() + yOffset);
         if (context != null && !isShowing()) {
+            setAnimationStyle(android.R.style.Animation_Toast);
             this.maskHeight = getScreenH(context) - view.getHeight() - yOffset;
             maskGravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
             showAsDropDown(view, 0, yOffset);
